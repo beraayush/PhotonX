@@ -194,8 +194,10 @@ class HdrEngine @Inject constructor(
             lFloat.convertTo(channels[0], CvType.CV_8UC1)
 
             Core.merge(channels, lab)
+            val midRgb = Mat()
+            Imgproc.cvtColor(lab, midRgb, Imgproc.COLOR_Lab2RGB)
             val outRgb = Mat()
-            Imgproc.cvtColor(lab, outRgb, Imgproc.COLOR_Lab2RGBA)
+            Imgproc.cvtColor(midRgb, outRgb, Imgproc.COLOR_RGB2RGBA)
 
             val outBmp = Bitmap.createBitmap(src.width, src.height, Bitmap.Config.ARGB_8888)
             Utils.matToBitmap(outRgb, outBmp)
@@ -207,6 +209,7 @@ class HdrEngine @Inject constructor(
             lFloat.release()
             invL.release()
             boost.release()
+            midRgb.release()
             outRgb.release()
 
             logger.info("HDR+", "Applied backlit subject fill-light lift")
