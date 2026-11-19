@@ -114,12 +114,15 @@ class NightEngine @Inject constructor(
             Core.merge(channels, lab)
             channels.forEach { it.release() }
 
+            val midRgb = Mat()
+            Imgproc.cvtColor(lab, midRgb, Imgproc.COLOR_Lab2RGB)
             val outRgba = Mat()
-            Imgproc.cvtColor(lab, outRgba, Imgproc.COLOR_Lab2RGBA)
+            Imgproc.cvtColor(midRgb, outRgba, Imgproc.COLOR_RGB2RGBA)
             lab.release()
 
             val outBmp = Bitmap.createBitmap(outRgba.cols(), outRgba.rows(), Bitmap.Config.ARGB_8888)
             Utils.matToBitmap(outRgba, outBmp)
+            midRgb.release()
             outRgba.release()
 
             logger.info("Night", "Stacked ${aligned.size} aligned frames cleanly")
